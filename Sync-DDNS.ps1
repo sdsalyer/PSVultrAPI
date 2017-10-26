@@ -1,5 +1,4 @@
-#Requires -Version 3.0
-Import-Module Invoke-VultrAPI
+#Requires -Version 3.0 -Modules PSVultrAPI
 <#
 .SYNOPSIS
 A DDNS update client for the Vultr API.
@@ -27,7 +26,7 @@ function Sync-DDNS {
 		# TODO: Make these input params?
 		$logFile = 'enterprise_ddns.log';
 		$ipFile = 'last_ip.json';
-		$myIp = . Get-WANIP; # TODO: is the dot import necessary?
+		$myIp = Get-WANIP;
 		$myLastIp = '';
 		
 		# Read the json file and set the last known IP
