@@ -5,18 +5,18 @@
 #}
 
 $PSVersion = $PSVersionTable.PSVersion.Major
-Import-Module $PSScriptRoot\..\PSVultrAPI -Force
+Import-Module $PSScriptRoot\..\PSVultrAPI -Force -Verbose | Write-Output
 
 #Integration test example
-Describe "Get-WANIP PS$PSVersion Integrations tests" {
+Describe "Vultr-APIBuilt PS$PSVersion Integrations tests" {
 
     Context 'Strict mode' { 
 
         Set-StrictMode -Version latest
 
         It 'should get valid data' {
-            $Output = Get-WANIP
-            $Output.name -contains '.'
+            $Output = Vultr-APIBuilt
+            $Output -contains 'It Works!'
         }
     }
 }

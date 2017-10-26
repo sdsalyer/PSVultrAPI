@@ -1,4 +1,4 @@
-#Requires -Version 3.0
+function Invoke-VultrAPI {
 <#
 .SYNOPSIS
 Invoke the Vultr API
@@ -12,7 +12,6 @@ Invoke the Vultr API
 .EXAMPLE
 .LINK
 #>
-function Invoke-VultrAPI {
 	[CmdletBinding()]
 	[OutputType([psobject])] # http response object ?
 	param()
@@ -69,32 +68,6 @@ function Invoke-VultrAPI {
 		}
 		
 		$response;
-	}
-	end{}
-}
-
-<#
-.SYNOPSIS
-Gets the current WAN IP address.
-
-.DESCRIPTION
-Gets the current WAN IP address by querying the ifconfig.me website.
-
-.OUTPUTS
-The current IP address of the machine.
-
-.EXAMPLE
-Get-WANIP
-123.12.12.123
-#>
-function Get-WANIP {
-	[CmdletBinding()]
-	[OutputType([String])]
-	param()
-	begin {}
-	process{
-		$myIpJSON = (Invoke-WebRequest ifconfig.me/all.json).Content | ConvertFrom-Json;
-		$myIpJSON.ip_addr;
 	}
 	end{}
 }

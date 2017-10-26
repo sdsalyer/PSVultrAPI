@@ -1,4 +1,17 @@
 #Requires -Version 3.0 -Modules PSVultrAPI
+
+<# 
+	TODO: This guy will:
+		* get the current IP address
+			* if it's saved to disk, compare and exit if no change
+		* write the IP to disk
+		* call the Vultr API, passing in 
+			- API key (how to store securely?)
+			- what else
+		* logging and such along the way
+#>
+
+function Sync-DDNS {
 <#
 .SYNOPSIS
 A DDNS update client for the Vultr API.
@@ -14,7 +27,6 @@ Gets the current WAN IP and calls the Vultr API to update the A record.
 .EXAMPLE
 .LINK
 #>
-function Sync-DDNS {
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param()
@@ -75,6 +87,7 @@ function Sync-DDNS {
 	}
 }
 
+function script:Get-TimeStamp {
 <#
 .SYNOPSIS
 Gets a formatted timestamp for logging.
@@ -92,6 +105,31 @@ This would write:
 [10/20/17 17:53:45]  Log this message
 to $myLogFile
 #>
-function script:Get-TimeStamp {
     "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date);
+}
+
+function script:Get-WANIP {
+<#
+.SYNOPSIS
+Gets the current WAN IP address.
+
+.DESCRIPTION
+Gets the current WAN IP address by querying the ifconfig.me website.
+
+.OUTPUTS
+The current IP address of the machine.
+
+.EXAMPLE
+Get-WANIP
+123.12.12.123
+#>
+	[CmdletBinding()]
+	[OutputType([String])]
+	param()
+	begin {}
+	process{
+		$myIpJSON = (Invoke-WebRequest ifconfig.me/all.json).Content | ConvertFrom-Json;
+		$myIpJSON.ip_addr;
+	}
+	end{}
 }
