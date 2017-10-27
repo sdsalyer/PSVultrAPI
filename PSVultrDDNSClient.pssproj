@@ -26,17 +26,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-	<Folder Include="Tests\" />
+    <Folder Include="Tests\" />
+    <Folder Include="Build\" />
     <Content Include="api_key.txt" />
     <Content Include="last_ip.json" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="build.ps1" />
-    <Compile Include="psake.ps1" />
+    <Compile Include="Build\build.requirements.psd1" />
+    <Compile Include="Build\deploy.psdeploy.ps1" />
+    <Compile Include="Build\psake.ps1" />
+    <Compile Include="Build\Start-Build.ps1" />
     <Compile Include="Sync-DDNS.ps1" />
-	<Compile Include="Tests\PSVultrAPI.Tests.ps1" />
+    <Compile Include="Tests\appveyor.pester.ps1" />
+    <Compile Include="Tests\Project.Tests.ps1" />
+    <Compile Include="Tests\PSVultrAPI.Tests.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

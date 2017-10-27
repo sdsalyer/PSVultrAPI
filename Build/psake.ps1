@@ -1,14 +1,14 @@
-# PSake makes variables declared here available in other scriptblocks
+﻿# PSake makes variables declared here available in other scriptblocks
 # Init some things
 Properties {
     # Find the build folder based on build system
         $ProjectRoot = $ENV:BHProjectPath
         if(-not $ProjectRoot)
         {
-            $ProjectRoot = $PSScriptRoot
+            $ProjectRoot = Resolve-Path "$PSScriptRoot\.."
         }
 
-    $Timestamp = Get-date -uformat "%Y%m%d-%H%M%S"
+    $Timestamp = Get-Date -UFormat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
     $TestFile = "TestResults_PS$PSVersion`_$TimeStamp.xml"
     $lines = '----------------------------------------------------------------------'
@@ -20,7 +20,7 @@ Properties {
     }
 }
 
-Task Default -Depends Deploy
+Task Default -Depends Test
 
 Task Init {
     $lines
@@ -62,11 +62,14 @@ Task Build -Depends Test {
     # Load the module, read the exported functions, update the psd1 FunctionsToExport
     Set-ModuleFunctions
 
-    # Bump the module version
+    # Bump the module version if we didn't already
     Try
     {
-        $Version = Get-NextPSGalleryVersion -Name $env:BHProjectName -ErrorAction Stop
-        Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version -ErrorAction stop
+        $GalleryVersion = Get-NextPSGalleryVersion -Name $env:BHProjectName -ErrorAction Stop
+        $GithubVersion = Get-MetaData -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -ErrorAction Stop
+        if($GalleryVersion -ge $GithubVersion) {
+            Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $GalleryVersion -ErrorAction stop
+        }
     }
     Catch
     {
@@ -78,7 +81,7 @@ Task Deploy -Depends Build {
     $lines
 
     $Params = @{
-        Path = $ProjectRoot
+        Path = "$ProjectRoot\Build"
         Force = $true
         Recurse = $false # We keep psdeploy artifacts, avoid deploying those : )
     }

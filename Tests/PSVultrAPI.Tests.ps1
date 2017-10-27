@@ -1,25 +1,25 @@
-$Verbose = @{}
-if($env:APPVEYOR_REPO_BRANCH -and $env:APPVEYOR_REPO_BRANCH -notlike "master")
-{
-    $Verbose.add("Verbose",$True)
-}
+#$Verbose = @{}
+#if($env:APPVEYOR_REPO_BRANCH -and $env:APPVEYOR_REPO_BRANCH -notlike "master")
+#{
+#    $Verbose.add("Verbose",$True)
+#}
 
-$PSVersion = $PSVersionTable.PSVersion.Major
-Import-Module $PSScriptRoot\..\PSVultrAPI -Force -Verbose | Write-Output
+#$PSVersion = $PSVersionTable.PSVersion.Major
+#Import-Module $PSScriptRoot\..\PSVultrAPI -Force -Verbose | Write-Output
 
-#Integration test example
-Describe "Vultr-APIBuilt PS$PSVersion Integrations tests" {
+##Integration test example
+#Describe "Vultr-APIBuilt PS$PSVersion Integrations tests" {
 
-    Context 'Strict mode' { 
+#    Context 'Strict mode' { 
 
-        Set-StrictMode -Version latest
+#        Set-StrictMode -Version latest
 
-        It 'should get valid data' {
-            $Output = Vultr-APIBuilt
-            $Output -contains 'It Works!'
-        }
-    }
-}
+#        It 'should get valid data' {
+#            $Output = Vultr-APIBuilt
+#            $Output -contains 'It Works!'
+#        }
+#    }
+#}
 
 # #Unit test example
 # Describe "Get-SEObject PS$PSVersion Unit tests" {

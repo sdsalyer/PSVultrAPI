@@ -32,7 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Private\Invoke-VultrAPI.psm1" />
-    <Compile Include="Private\Write-VultrAPILog.psm1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
     <Compile Include="Public\Vultr-APIBuilt.psm1" />

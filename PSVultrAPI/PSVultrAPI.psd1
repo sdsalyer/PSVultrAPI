@@ -21,7 +21,7 @@ GUID = 'de1991dc-0c8f-4ab9-be44-a2c3649b450a'
 Author = 'Spencer Salyer'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+CompanyName = 'Salyer Creative, LLC'
 
 # Copyright statement for this module
 Copyright = '(c) 2017 Spencer Salyer. All rights reserved.'
@@ -92,7 +92,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-         Tags = @('Vultr', 'Vultr API')
+         Tags = @('Vultr', 'Vultr API', 'PSVultrAPI')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/sdsalyer/PSVultrAPI/blob/master/LICENSE'
