@@ -6,7 +6,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
-    <Name>PSVultrDDNSClient</Name>
+    <Name>PSVultrAPI_Module</Name>
+    <ProjectHome />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,10 +27,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Examples\" />
     <Folder Include="Tests\" />
     <Folder Include="Build\" />
-    <Content Include="api_key.txt" />
-    <Content Include="last_ip.json" />
+    <Content Include="Examples\last_ip.json" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
   </ItemGroup>
@@ -38,8 +39,7 @@
     <Compile Include="Build\deploy.psdeploy.ps1" />
     <Compile Include="Build\psake.ps1" />
     <Compile Include="Build\Start-Build.ps1" />
-    <Compile Include="Sync-DDNS.ps1" />
-    <Compile Include="Tests\appveyor.pester.ps1" />
+    <Compile Include="Examples\Sync-DDNS.ps1" />
     <Compile Include="Tests\Project.Tests.ps1" />
     <Compile Include="Tests\PSVultrAPI.Tests.ps1" />
   </ItemGroup>

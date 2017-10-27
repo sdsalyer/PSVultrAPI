@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "PSVultrDDNSClient", "PSVultrDDNSClient.pssproj", "{6CAFC0C6-A428-4D30-A9F9-700E829FEA51}"
+Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "PSVultrAPI_Module", "PSVultrAPI_Module.pssproj", "{6CAFC0C6-A428-4D30-A9F9-700E829FEA51}"
 EndProject
 Project("{F5034706-568F-408A-B7B3-4D38C6DB8A32}") = "PSVultrAPI", "PSVultrAPI\PSVultrAPI.pssproj", "{8855D31A-A42B-422C-867F-57C59930CD20}"
 EndProject
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29DF03ED-1893-433B-A48F-ADB81D9D8FD7}
 	EndGlobalSection
 EndGlobal

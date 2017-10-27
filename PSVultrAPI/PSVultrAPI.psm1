@@ -16,7 +16,7 @@ foreach($folder in @('Private', 'Public', 'Classes'))
     }
 }
 
-Export-ModuleMember -function (Get-ChildItem -Path "$PSScriptRoot\public\*.ps1").basename
+Export-ModuleMember -function (Get-ChildItem -Path "$PSScriptRoot\Public\*.ps1").basename
 
 # The below from PSStackExchange didn't work for me...
 ##Get public and private function definition files.

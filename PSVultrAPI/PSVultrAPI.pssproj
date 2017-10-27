@@ -31,10 +31,10 @@
     <Folder Include="Public\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Private\Invoke-VultrAPI.psm1" />
+    <Compile Include="Private\Invoke-VultrAPI.ps1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
-    <Compile Include="Public\Vultr-APIBuilt.psm1" />
+    <Compile Include="Public\Vultr-APIBuilt.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="en-US\about_PSVultrAPI.help.txt" />
