@@ -17,7 +17,7 @@ If you are interested in learning PowerShell, I highly recommend Warren's blog a
 I've found these guys to be clear and concise in explaining things. There's also the YouTube series (and book) 
 [PowerShell in a Month of Lunches](https://www.youtube.com/playlist?list=PL6D474E721138865A) by Don Jones.
 
-* [How do I Learn PowerShell?]http://ramblingcookiemonster.github.io/How-Do-I-Learn-PowerShell/() - _Warren Frame_
+* [How do I Learn PowerShell?](http://ramblingcookiemonster.github.io/How-Do-I-Learn-PowerShell/) - _Warren Frame_
 * [Building a PowerShell Module](http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/) - _Warren Frame_
 * [Powershell Module Building Basics](https://kevinmarquette.github.io/2017-05-27-Powershell-module-building-basics/) - _Kevin Marquette_
 
