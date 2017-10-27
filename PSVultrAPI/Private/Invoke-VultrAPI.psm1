@@ -1,4 +1,4 @@
-function Invoke-VultrAPI {
+Function Invoke-VultrAPI {
 <#
 .SYNOPSIS
 Invoke the Vultr API

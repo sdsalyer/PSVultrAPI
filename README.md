@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/jhus0m22mxjgf6v4/branch/master?svg=true)](https://ci.appveyor.com/project/sdsalyer/psvultrapi/branch/master)
+
 PSVultrAPI
 =============
 
@@ -15,9 +17,9 @@ If you are interested in learning PowerShell, I highly recommend Warren's blog a
 I've found these guys to be clear and concise in explaining things. There's also the YouTube series (and book) 
 [PowerShell in a Month of Lunches](https://www.youtube.com/playlist?list=PL6D474E721138865A) by Don Jones.
 
-	* [How do I Learn PowerShell?]() - _Warren Frame_
-	* [Building a PowerShell Module](http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/) - _Warren Frame_
-	* [Powershell Module Building Basics](https://kevinmarquette.github.io/2017-05-27-Powershell-module-building-basics/) - _Kevin Marquette_
+* [How do I Learn PowerShell?]http://ramblingcookiemonster.github.io/How-Do-I-Learn-PowerShell/() - _Warren Frame_
+* [Building a PowerShell Module](http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/) - _Warren Frame_
+* [Powershell Module Building Basics](https://kevinmarquette.github.io/2017-05-27-Powershell-module-building-basics/) - _Kevin Marquette_
 
 Although I didn't reference it, there is another PS Vultr module by [vektorprime](https://gitlab.com/vektorprime/Vultr-PowerShell).
 	
@@ -39,19 +41,13 @@ Although I didn't reference it, there is another PS Vultr module by [vektorprime
     Get-Command -Module PSVultrAPI
 
 # Get help
-    Get-Help Get-WANIP -Full
+    Get-Help Get-VultrDNS -Full
     Get-Help about_PSVultrAPI
 ```
 
 #Examples
 
 ### TODO: Examples
-
-```PowerShell
-	# TODO: Example
-```
-
-### Search Stack Exchange Questions
 
 ```PowerShell
 	# TODO: Example
