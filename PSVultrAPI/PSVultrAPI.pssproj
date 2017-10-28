@@ -34,6 +34,8 @@
     <Compile Include="Private\Invoke-VultrAPI.ps1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
+    <Compile Include="Public\Protect-VultrAPIKey.ps1" />
+    <Compile Include="Public\Unprotect-VultrAPIKey.ps1" />
     <Compile Include="Public\Vultr-APIBuilt.ps1" />
   </ItemGroup>
   <ItemGroup>
