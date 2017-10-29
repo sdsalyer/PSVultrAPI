@@ -31,7 +31,8 @@ Function Invoke-VultrAPI {
 
 		[parameter( Mandatory=$false, ValueFromPipelineByPropertyName =$true )]
 		[alias('Key','APIKey')]
-		[System.Security.SecureString]$VultrAPIKey,
+		[string]$VultrAPIKey,
+		#[System.Security.SecureString]$VultrAPIKey, # TODO: Debated using secure string, but not sure it's useful in any way 
 
 		[alias('Parameters', 'Params', 'Body')]
 		[Hashtable]$RequestBody = @{},
@@ -50,7 +51,7 @@ Function Invoke-VultrAPI {
 		# Not all API functions require a key
 		if($VultrAPIKey) {
 			$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]";
-			$headers.Add("API-Key", ($VultrAPIKey | ConvertFrom-SecureString));
+			$headers.Add("API-Key", $VultrAPIKey);
 		}
 			
 		# Write-Debug "Request:`n`tURI: $uri`n`tMethod: $method`n`tHeaders: $(Out-String -InputObject $headers)`n`tParameters: $(Out-String -InputObject $parameters)";
@@ -64,10 +65,11 @@ Function Invoke-VultrAPI {
 				#$parameters = '';
 				#$method = 'Get'; 
 
+				# I suppose this isn't true after all
 				# GET doesn't supply a body, but sometimes pases in URL parameters
-				if ($Body.Count -gt 0) {
-					$APIRequestUri + "?$($RequestBody -join '&')";
-				}
+				#if ($RequestBody.Count -gt 0) {
+				#	$APIRequestUri + "?$($RequestBody -join '&')";
+				#}
 
 				# Write-Debug "Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $(Out-String -InputObject $headers)";
 			} 
@@ -99,26 +101,14 @@ Function Invoke-VultrAPI {
 			}
 		}
 
-
-		<#
-		 
-			Handle HTTP Response Codes:
-
-			Code	Description
-			200		Function successfully executed.
-			400		Invalid API location. Check the URL that you are using.
-			403		Invalid or missing API key. Check that your API key is present and matches your assigned key.
-			405		Invalid HTTP method. Check that the method (POST|GET) matches what the documentation indicates.
-			412		Request failed. Check the response body for a more detailed description.
-			500		Internal server error. Try again at a later time.
-			503		Rate limit hit. API requests are limited to an average of 2/s. Try your request again later.
-
-		#>
 		
+		# Invoke the API
 		try {
 			$response = Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody;
 		}
 		catch [System.Net.WebException]{
+			# Handle HTTP Response Codes:
+
 			[string]$errorMessage = '';
 			switch ([int]$_.Exception.Response.StatusCode) {
 				#Code	Description
@@ -135,9 +125,20 @@ Function Invoke-VultrAPI {
 		}
 
 		#Response is a PSObject representing JSON, so it can be converted using ConvertTo-Json
-		$response;
+		$response | ConvertTo-Json;
 	}
 	end{}
 }
 
-#Invoke-VultrAPI -HTTPMethod GET -APIGroup 'os' -APIFunction 'derp' -Debug
+# 400
+#Invoke-VultrAPI -HTTPMethod GET -APIGroup 'os' -APIFunction 'derp'
+
+# 200
+#Invoke-VultrAPI -HTTPMethod GET -APIGroup 'os' -APIFunction 'list'
+
+# /v1/dns/records (?domain=example.com)
+# /v1/dns/list
+#Invoke-VultrAPI -HTTPMethod GET -APIGroup 'dns' -APIFunction 'list' -VultrAPIKey (Get-Content -Path D:\dev\powershell\PSVultrAPI\Examples\vultr_api_key.txt)
+
+Invoke-VultrAPI -HTTPMethod GET -APIGroup 'dns' -APIFunction 'records' -RequestBody @{domain = 'salyercreative.com'} -VultrAPIKey (Get-Content -Path D:\dev\powershell\PSVultrAPI\Examples\vultr_api_key.txt)
+
