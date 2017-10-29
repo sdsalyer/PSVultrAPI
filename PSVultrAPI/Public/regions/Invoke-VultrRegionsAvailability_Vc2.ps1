@@ -1,0 +1,1 @@
+# TODO: Invoke-VultrRegionsAvailability_Vc2.ps1
