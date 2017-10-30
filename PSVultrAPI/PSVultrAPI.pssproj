@@ -56,9 +56,9 @@
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
     <Compile Include="Public\account\Get-VultrAccountInfo.ps1" />
-    <Compile Include="Public\dns\Invoke-VultrDnsList.ps1" />
-    <Compile Include="Public\dns\Invoke-VultrDnsRecords.ps1" />
-    <Compile Include="Public\dns\Invoke-VultrDnsUpdate_Record.ps1" />
+    <Compile Include="Public\dns\Get-VultrDnsList.ps1" />
+    <Compile Include="Public\dns\Get-VultrDnsRecords.ps1" />
+    <Compile Include="Public\dns\Update-VultrDnsRecord.ps1" />
     <Compile Include="Public\os\Get-VultrOsList.ps1" />
     <Compile Include="Public\plans\Invoke-VultrPlansList.ps1" />
     <Compile Include="Public\plans\Invoke-VultrPlansList_Vc2.ps1" />

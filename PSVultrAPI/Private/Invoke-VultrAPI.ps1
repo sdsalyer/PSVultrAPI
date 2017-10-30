@@ -136,7 +136,8 @@ function Invoke-VultrAPI {
         }
         catch [System.Net.WebException]{
             # Handle HTTP Response Codes:
-            switch ([int]$_.Exception.Response.StatusCode) {
+			$statusCode = [int]$_.Exception.Response.StatusCode;
+            switch ($statusCode) {
                 # Code					Description
                 # 200{$errorMessage = 'Function successfully executed.'																   } # shouldn't get this on an exception
                 400{$errorMessage = 'Invalid API location. Check the URL that you are using.'										   }
@@ -147,7 +148,9 @@ function Invoke-VultrAPI {
                 503{$errorMessage = 'Rate limit hit. API requests are limited to an average of 2/s. Try your request again later.'	   }
             }
 
-            Write-Error ([string]::Format("PSVultrAPI Error : {0}", $errorMessage))
+			$errorMessage = [string]::Format("PSVultrAPI Error: ({0}) - {1}", $statusCode, $errorMessage)
+
+            Write-Error $errorMessage
             return $errorMessage;
         }
 
@@ -156,3 +159,8 @@ function Invoke-VultrAPI {
     }
     end{}
 }
+
+
+$params = @{ domain = 'salyercreative.com'; RECORDID = $recordId; data = '192.168.10.1'; }
+
+$result = Invoke-VultrAPI -HTTPMethod POST -APIGroup 'dns' -APIFunction 'update_record' -VultrAPIKey (Get-Content .\Examples\vultr_api_key.txt) -RequestBody $params
