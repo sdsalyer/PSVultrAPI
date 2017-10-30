@@ -1,4 +1,5 @@
-﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
@@ -48,15 +49,17 @@
     <Folder Include="Public\user" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Private\Get-Vultr.ps1" />
     <Compile Include="Private\Invoke-VultrAPI.ps1" />
+    <Compile Include="Private\Set-Vultr.ps1" />
     <Compile Include="Private\Test-Json.ps1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
-    <Compile Include="Public\account\Invoke-VultrAccountInfo.ps1" />
+    <Compile Include="Public\account\Get-VultrAccountInfo.ps1" />
     <Compile Include="Public\dns\Invoke-VultrDnsList.ps1" />
     <Compile Include="Public\dns\Invoke-VultrDnsRecords.ps1" />
     <Compile Include="Public\dns\Invoke-VultrDnsUpdate_Record.ps1" />
-    <Compile Include="Public\os\Invoke-VultrOsList.ps1" />
+    <Compile Include="Public\os\Get-VultrOsList.ps1" />
     <Compile Include="Public\plans\Invoke-VultrPlansList.ps1" />
     <Compile Include="Public\plans\Invoke-VultrPlansList_Vc2.ps1" />
     <Compile Include="Public\plans\Invoke-VultrPlansList_Vdc2.ps1" />

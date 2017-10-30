@@ -1,53 +1,53 @@
 function Invoke-VultrAPI {
 <#
-    .SYNOPSIS
-    Invoke the Vultr API
+    .Synopsis
+        Invoke the Vultr API
 
-    .DESCRIPTION
+    .Description
 
-    .PARAMETER $HTTPMethod
+    .Parameter $HTTPMethod
 
-    .PARAMETER $APIGroup
+    .Parameter $APIGroup
 
-    .PARAMETER $APIFunction
+    .Parameter $APIFunction
 
-    .PARAMETER $VultrAPIKey
-\		
-    .PARAMETER RequestBody
+    .Parameter $VultrAPIKey
+        
+    .Parameter $RequestBody
 
-    .PARAMETER $Uri
+    .Parameter $Uri
     
-    .PARAMETER $Version 
+    .Parameter $Version 
 
-    .OUTPUTS
+    .Outputs
         The Vultr API returns JSON or an HTTP Status code. 
 
-    .EXAMPLE  
+    .Example 
         # GET request with no arguments.
         # curl "https://api.vultr.com/v1/os/list"
         Invoke-VultrAPI -HTTPMethod GET -APIGroup 'os' -APIFunction 'list'
 
-    .EXAMPLE
+    .Example
         # GET request that requires your API key.
         # curl -H 'API-Key: YOURKEY' "https://api.vultr.com/v1/server/list"
         Invoke-VultrAPI -HTTPMethod GET -APIGroup 'server' -APIFunction 'list' -VultrAPIKey YOURKEY
 
-    .EXAMPLE
+    .Example
         # GET request with additional parameters.
         # curl -H 'API-Key: YOURKEY' -G --data "SUBID=12345" "https://api.vultr.com/v1/server/list"
         Invoke-VultrAPI -HTTPMethod GET -APIGroup 'server' -APIFunction 'list' -RequestBody @{SUBID = 12345} -VultrAPIKey YOURKEY
 
-    .EXAMPLE
+    .Example
         # POST request that requires your API key.
         # curl -H 'API-Key: YOURKEY' --data "SUBID=12345" "https://api.vultr.com/v1/server/start"
         Invoke-VultrAPI -HTTPMethod POST -APIGroup 'server' -APIFunction 'start' -RequestBody @{SUBID = 12345} -VultrAPIKey YOURKEY
 
-    .EXAMPLE
+    .Example
         # POST request with additional parameters.
         # curl -H 'API-Key: YOURKEY' --data "SUBID=12345" --data-urlencode 'label=my server!' "https://api.vultr.com/v1/server/label_set"        
         Invoke-VultrAPI -HTTPMethod POST -APIGroup 'server' -APIFunction 'label_set' -RequestBody @{SUBID = 12345, label = 'my server!'} -VultrAPIKey (Get-Content -Path ..\Path\To\vultr_api_key.txt)
  
-    .EXAMPLE
+    .Example
         # Extended example
         $key = Get-Content 'c:\path\to\api_key.txt'
         $group = 'dns'
@@ -87,7 +87,6 @@ function Invoke-VultrAPI {
         [parameter( Mandatory=$false, ValueFromPipelineByPropertyName =$true )]
         [alias('Key','APIKey')]
         [string]$VultrAPIKey,
-        #[System.Security.SecureString]$VultrAPIKey, # TODO: Debated using secure string, but not sure it's useful in any way 
 
         [alias('Parameters', 'Params', 'Body')]
         [Hashtable]$RequestBody = @{},
@@ -98,77 +97,48 @@ function Invoke-VultrAPI {
     )
     begin {}
     process{
-        # Begin assembling the request URI
-        $APIRequestUri = "$Uri/v$Version/$APIGroup/$APIFunction";
+        # Set up the $Response
+        $Response = ''
 
-        #Write-Debug $APIRequestUri;
+        # An error message if we need it
+        $errorMessage = ''
+
+        # Begin assembling the request URI
+        $APIRequestUri = "$Uri/v$Version/$APIGroup/$APIFunction"
 
         # Not all API functions require a key
         if($VultrAPIKey) {
-            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]";
-            $headers.Add("API-Key", $VultrAPIKey);
+            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+            $headers.Add("API-Key", $VultrAPIKey)
         }
-            
-        # Write-Debug "Request:`n`tURI: $uri`n`tMethod: $method`n`tHeaders: $(Out-String -InputObject $headers)`n`tParameters: $(Out-String -InputObject $parameters)";
 
+        # Potentially handle other REST methods
         switch ($HTTPMethod) { 
             'GET' {
-                # Parameterless GET requests
-                #$apiCall = '/v1/account/info'; 
-                #$apiCall = '/v1/dns/list';
-                #$apiCall = '/v1/dns/records?domain=salyercreative.com';
-                #$parameters = '';
-                #$method = 'Get'; 
 
-                # I suppose this isn't true after all
-                # GET doesn't supply a body, but sometimes pases in URL parameters
-                #if ($RequestBody.Count -gt 0) {
-                #	$APIRequestUri + "?$($RequestBody -join '&')";
-                #}
-
-                # Write-Debug "Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $(Out-String -InputObject $headers)";
             } 
             'POST' {
 
-                
-                ##POST Requests
-                # $apiCall = '/v1/dns/update_record';
-                # <# 
-                    # domain string Domain name to update record
-                    # RECORDID integer ID of record to update (see /dns/records)
-                    # name string (optional) Name (subdomain) of record
-                    # data string (optional) Data for this record
-                    # ttl integer (optional) TTL of this record
-                    # priority integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data)
-                ##>
-                # $parameters = @{
-                   # domain = 'salyercreative.com';
-                   # RECORDID = '4900476';
-                   # data = $myIp;
-                # };
-                # $method = 'Post';
-
-                # Write-Debug "Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $(Out-String -InputObject $headers) -Body $(Out-String -InputObject $RequestBody)";
 
             } 
             default {
-                Write-Error 'No HTTP Method determined.';
+                $errorMessage = 'No HTTP Method determined.'
+                Write-Error $errorMessage
+                return $errorMessage;
             }
         }
 
         
         # Invoke the API
         try {
-			# TODO: Consider changing to Invoke-WebRequest for greater flexibility
-            $response = Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody;
+            # TODO: Consider changing to Invoke-WebRequest for greater flexibility
+            $Response = Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody
         }
         catch [System.Net.WebException]{
             # Handle HTTP Response Codes:
-
-            [string]$errorMessage = '';
             switch ([int]$_.Exception.Response.StatusCode) {
-                #Code	Description
-                200{$errorMessage = 'Function successfully executed.'																   } # shouldn't get this on an exception
+                # Code					Description
+                # 200{$errorMessage = 'Function successfully executed.'																   } # shouldn't get this on an exception
                 400{$errorMessage = 'Invalid API location. Check the URL that you are using.'										   }
                 403{$errorMessage = 'Invalid or missing API key. Check that your API key is present and matches your assigned key.'	   }
                 405{$errorMessage = 'Invalid HTTP method. Check that the method (POST|GET) matches what the documentation indicates.'  }
@@ -178,10 +148,11 @@ function Invoke-VultrAPI {
             }
 
             Write-Error ([string]::Format("PSVultrAPI Error : {0}", $errorMessage))
+            return $errorMessage;
         }
 
-        #Response is a PSObject representing JSON, so it can be converted using ConvertTo-Json
-        $response;
+        # $Response is a PSObject containing JSON data
+        $Response
     }
     end{}
 }
