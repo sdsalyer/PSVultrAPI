@@ -1,4 +1,4 @@
-function Invoke-VultrAccountInfo {
+function Invoke-Vultr<group><function> {
 <#
 	.Synopsis
 		Gets account info.
@@ -13,12 +13,22 @@ function Invoke-VultrAccountInfo {
 		Invoke-VultrAccountInfo
 
 		# Example Output:
-		{
-			"balance": "-5519.11",
-			"pending_charges": "57.03",
-			"last_payment_date": "2014-07-18 15:31:01",
-			"last_payment_amount": "-1.00"
-		}
+			{
+				"127": {
+					"OSID": "127",
+					"name": "CentOS 6 x64",
+					"arch": "x64",
+					"family": "centos",
+					"windows": false
+				},
+				"148": {
+					"OSID": "148",
+					"name": "Ubuntu 12.04 i386",
+					"arch": "i386",
+					"family": "ubuntu",
+					"windows": false
+				}
+			}
 
 	.Inputs
 		String representation of the Vultr API key.
@@ -33,18 +43,14 @@ function Invoke-VultrAccountInfo {
 		Required Access:	billing
 #>
     [cmdletbinding()]
-    param(
-	    [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
-        [alias('Key','APIKey')]
-        [string]$VultrAPIKey
-	)
-
+    param( )
+    
 	begin { }
 	
 	process {
 	
 		try {
-			Invoke-VultrAPI -HTTPMethod GET -APIGroup 'account' -APIFunction 'info' -VultrAPIKey $VultrAPIKey
+			# Invoke-VultrAPI -HTTPMethod GET -APIGroup 'os' -APIFunction 'list'
 		}
 		catch {
 			throw

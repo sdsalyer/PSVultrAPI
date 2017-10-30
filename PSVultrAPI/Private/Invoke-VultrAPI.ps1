@@ -159,6 +159,7 @@ function Invoke-VultrAPI {
         
         # Invoke the API
         try {
+			# TODO: Consider changing to Invoke-WebRequest for greater flexibility
             $response = Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody;
         }
         catch [System.Net.WebException]{
@@ -167,7 +168,7 @@ function Invoke-VultrAPI {
             [string]$errorMessage = '';
             switch ([int]$_.Exception.Response.StatusCode) {
                 #Code	Description
-                200{$errorMessage = 'Function successfully executed.'																   }
+                200{$errorMessage = 'Function successfully executed.'																   } # shouldn't get this on an exception
                 400{$errorMessage = 'Invalid API location. Check the URL that you are using.'										   }
                 403{$errorMessage = 'Invalid or missing API key. Check that your API key is present and matches your assigned key.'	   }
                 405{$errorMessage = 'Invalid HTTP method. Check that the method (POST|GET) matches what the documentation indicates.'  }
@@ -180,7 +181,7 @@ function Invoke-VultrAPI {
         }
 
         #Response is a PSObject representing JSON, so it can be converted using ConvertTo-Json
-        $response | ConvertTo-Json;
+        $response;
     }
     end{}
 }

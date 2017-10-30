@@ -29,12 +29,37 @@
     <Folder Include="en-US\" />
     <Folder Include="Private\" />
     <Folder Include="Public\" />
+    <Folder Include="Public\account" />
+    <Folder Include="Public\app" />
+    <Folder Include="Public\auth" />
+    <Folder Include="Public\backup" />
+    <Folder Include="Public\block" />
+    <Folder Include="Public\dns" />
+    <Folder Include="Public\firewall" />
+    <Folder Include="Public\iso" />
+    <Folder Include="Public\os" />
+    <Folder Include="Public\plans" />
+    <Folder Include="Public\regions" />
+    <Folder Include="Public\reservedip" />
+    <Folder Include="Public\server" />
+    <Folder Include="Public\snapshot" />
+    <Folder Include="Public\sshkey" />
+    <Folder Include="Public\startupscript" />
+    <Folder Include="Public\user" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Private\Invoke-VultrAPI.ps1" />
     <Compile Include="Private\Test-Json.ps1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />
+    <Compile Include="Public\account\Invoke-VultrAccountInfo.ps1" />
+    <Compile Include="Public\dns\Invoke-VultrDnsList.ps1" />
+    <Compile Include="Public\dns\Invoke-VultrDnsRecords.ps1" />
+    <Compile Include="Public\dns\Invoke-VultrDnsUpdate_Record.ps1" />
+    <Compile Include="Public\os\Invoke-VultrOsList.ps1" />
+    <Compile Include="Public\plans\Invoke-VultrPlansList.ps1" />
+    <Compile Include="Public\plans\Invoke-VultrPlansList_Vc2.ps1" />
+    <Compile Include="Public\plans\Invoke-VultrPlansList_Vdc2.ps1" />
     <Compile Include="Public\Protect-VultrAPIKey.ps1" />
     <Compile Include="Public\Unprotect-VultrAPIKey.ps1" />
   </ItemGroup>
