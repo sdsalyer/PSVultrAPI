@@ -13,24 +13,24 @@ function Get-VultrDnsRecords {
         Get-VultrDnsRecords -Key (Get-Content api_key.txt) -Domain example.com
 
         # Example Output:
-		[
-			{
-				"type": "A",
-				"name": "",
-				"data": "127.0.0.1",
-				"priority": 0,
-				"RECORDID": 1265276,
-				"ttl": 300
-			},
-			{
-				"type": "CNAME",
-				"name": "*",
-				"data": "example.com",
-				"priority": 0,
-				"RECORDID": 1265277,
-				"ttl": 300
-			}
-		]
+        [
+            {
+                "type": "A",
+                "name": "",
+                "data": "127.0.0.1",
+                "priority": 0,
+                "RECORDID": 1265276,
+                "ttl": 300
+            },
+            {
+                "type": "CNAME",
+                "name": "*",
+                "data": "example.com",
+                "priority": 0,
+                "RECORDID": 1265277,
+                "ttl": 300
+            }
+        ]
 
     .Inputs
         String representation of the Vultr API key.
@@ -42,7 +42,7 @@ function Get-VultrDnsRecords {
         Path:				/v1/dns/records
         API Key Required:	Yes
         Request Type:		GET
-		Required Access:	dns
+        Required Access:	dns
 #>
     [cmdletbinding()]
     param(
@@ -60,9 +60,9 @@ function Get-VultrDnsRecords {
     process {
     
         try {
-			$params = @{
-				domain = $DomainName
-			}
+            $params = @{
+                domain = $DomainName
+            }
 
             Vultr-Get 'dns' 'records' -VultrAPIKey $VultrAPIKey -RequestBody $params
         }

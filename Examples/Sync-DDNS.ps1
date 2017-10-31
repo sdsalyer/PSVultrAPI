@@ -1,16 +1,4 @@
 #Requires -Version 3.0 -Modules PSVultrAPI
-
-<# 
-	TODO: This guy will:
-		* get the current IP address
-			* if it's saved to disk, compare and exit if no change
-		* write the IP to disk
-		* call the Vultr API, passing in 
-			- API key (how to store securely?)
-			- what else
-		* logging and such along the way
-#>
-
 function Sync-DDNS {
 <#
 .SYNOPSIS
@@ -27,64 +15,70 @@ Gets the current WAN IP and calls the Vultr API to update the A record.
 .EXAMPLE
 .LINK
 #>
-	[CmdletBinding()]
-	[OutputType([psobject])]
-	param()
-	begin {
-		Write-Output "START: ===========================$(Get-TimeStamp)" | Out-File $logFile -Append -Force;
-	}
-	process{
-		# IP Checking and logging setup
-		# TODO: Make these input params?
-		$logFile = 'enterprise_ddns.log';
-		$ipFile = 'last_ip.json';
-		$myIp = Get-WANIP;
-		$myLastIp = '';
-		
-		# Read the json file and set the last known IP
-		if (Test-Path $ipFile) {
-			$myLastIpJSON = Get-Content -Raw $ipFile | ConvertFrom-Json;
-			$myLastIp = $myLastIpJSON.ip_addr
-		}
+    [CmdletBinding()]
+    [OutputType([psobject])]
+    param(
+        [parameter(Position=0, Mandatory=$true, ValueFromPipelineByPropertyName =$true, ValueFromPipeline=$true )]
+        [alias('Key','APIKey')]
+        [string]$VultrAPIKey,
 
-		# Log the current and previous IP
-		Write-Output "$(Get-TimeStamp) Last IP: $myLastIp" | Out-File $logFile -Append -Force;
-		Write-Output "$(Get-TimeStamp) Curr IP: $myIp" | Out-File $logFile -Append -Force;
+        [parameter(Position=1, Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
+        [alias('Domain')]
+        [string]$DomainName,
 
-		# Exit if no change.
-		if($myLastIp -eq $myIp) {
-			exit;
-		}
-		Write-Output @{ ip_addr = $myIp } | ConvertTo-JSON | Out-File $ipFile -Force
+        [parameter(Position=2, Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
+        [alias('Name')]
+        [string]$SubDomain
+    )
+    begin {
+        Write-Log "START: ==========================="
+    }
+    process{
+        # IP Checking
+        $ipFile = 'last_ip.json'
+        $myIp = Get-WANIP
+        $myLastIp = ''
+        
+        # Read the json file and set the last known IP
+        if (Test-Path $ipFile) {
+            $myLastIpJSON = Get-Content -Raw $ipFile | ConvertFrom-Json
+            $myLastIp = $myLastIpJSON.ip_addr
+        }
 
-		
-		# TODO: call the Vultr API here
-		# POST Requests
-		$apiCall = '/v1/dns/update_record';
-		<# 
-			domain string Domain name to update record
-			RECORDID integer ID of record to update (see /dns/records)
-			name string (optional) Name (subdomain) of record
-			data string (optional) Data for this record
-			ttl integer (optional) TTL of this record
-			priority integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data)
-		#>
+        # Log the current and previous IP
+        Write-Log "Last IP   : $myLastIp"
+        Write-Log "Current IP: $myIp"
 
-		# RECORDID in GET /v1/dns/records?domain=salyercreative.com
-		$parameters = @{
-		   domain = 'salyercreative.com';
-		   RECORDID = '4900476';
-		   data = $myIp;
-		};
-		$method = 'Post';
-		$response = Invoke-VultrAPI -Method $method -Call $apiCall -Parameters $parameters
+        # Exit if no change. Otherwise, write the IP to file.
+        if($myLastIp -eq $myIp) {
+            exit
+        }
+        Write-Output @{ ip_addr = $myIp } | ConvertTo-JSON | Out-File $ipFile -Force
 
-		Write-Output "$(Get-TimeStamp) Response:`n`t$(Out-String -InputObject $response)" | Out-File $logFile -Append -Force;
+        # Set up the API call
+        $parameters = @{
+            VultrApIKey = $VultrAPIKey
+            DomainName = $DomainName
+			#TODO: This isn't right :(
+            RecordId = (Get-VultrDnsRecords $VultrAPIKey $DomainName | Where-Object -Property Content -EQ $SubDomain).RECORDID
+            SubDomain = $SubDomain
+            RecordData = $myIp
+        }
+        $response = Update-VultrDnsRecord @Parameters
 
-	}
-	end{
-		Write-Output "END: =============================$(Get-TimeStamp)" | Out-File $logFile -Append -Force;
-	}
+        Write-Log "Response:`n`t$(Out-String -InputObject $response)"
+
+        if($resopnse) {
+            Write-Log "Successfully updated DNS Record."
+        }
+        else {
+            Write-Log "ERROR updating DNS Record."
+        }
+
+    }
+    end{
+        Write-Log "END: ============================="
+    }
 }
 
 function script:Get-TimeStamp {
@@ -105,7 +99,8 @@ This would write:
 [10/20/17 17:53:45]  Log this message
 to $myLogFile
 #>
-    "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date);
+
+    "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
 }
 
 function script:Get-WANIP {
@@ -123,13 +118,11 @@ The current IP address of the machine.
 Get-WANIP
 123.12.12.123
 #>
-	[CmdletBinding()]
-	[OutputType([String])]
-	param()
-	begin {}
-	process{
-		$myIpJSON = (Invoke-WebRequest ifconfig.me/all.json).Content | ConvertFrom-Json;
-		$myIpJSON.ip_addr;
-	}
-	end{}
+
+    $myIpJSON = (Invoke-WebRequest ifconfig.me/all.json).Content | ConvertFrom-Json
+    $myIpJSON.ip_addr
+}
+
+function script:Write-Log([string] $line, [string]$logFile = 'ddns.log') {
+     Write-Output "[$(Get-TimeStamp)$line]" | Out-File $logFile -Append -Force
 }

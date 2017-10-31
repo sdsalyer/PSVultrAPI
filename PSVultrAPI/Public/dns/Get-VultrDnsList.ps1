@@ -13,12 +13,12 @@ function Get-VultrDnsList {
         Get-VultrDnsList -Key (Get-Content api_key.txt)
 
         # Example Output:
-		[
-			{
-				"domain": "example.com",
-				"date_created": "2014-12-11 16:20:59"
-			}
-		]
+        [
+            {
+                "domain": "example.com",
+                "date_created": "2014-12-11 16:20:59"
+            }
+        ]
 
     .Inputs
         String representation of the Vultr API key.
@@ -30,7 +30,7 @@ function Get-VultrDnsList {
         Path:				/v1/dns/list
         API Key Required:	Yes
         Request Type:		GET
-		Required Access:	dns
+        Required Access:	dns
 #>
     [cmdletbinding()]
     param(

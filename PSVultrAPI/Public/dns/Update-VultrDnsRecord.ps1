@@ -6,46 +6,46 @@ function Update-VultrDnsRecord {
     .Description
         Updates DNS record information for the specified domain in the Vultr API.
 
-	.Parameter $DomainName
-		string Domain name to update record
+    .Parameter $DomainName
+        string Domain name to update record
 
-	.Parameter $RecordId
-		integer ID of record to update (see /dns/records)
+    .Parameter $RecordId
+        integer ID of record to update (see /dns/records)
 
-	.Parameter $SubDomain 
-		string (optional) Name (subdomain) of record
+    .Parameter $SubDomain 
+        string (optional) Name (subdomain) of record
 
-	.Parameter $RecordData 
-		string (optional) Data for this record
+    .Parameter $RecordData 
+        string (optional) Data for this record
 
-	.Parameter $TimeToLive
-		integer (optional) TTL of this record
+    .Parameter $TimeToLive
+        integer (optional) TTL of this record
 
-	.Parameter $Priority 
-		integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data)
+    .Parameter $Priority 
+        integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data)
 
    .Example
         Update-VultrDnsRecord -Key (Get-Content api_key.txt) -DomainName example.com -RecordId 123456 -Data 192.0.2.99
 
         # Example Output:
-		$true or $false
+        $true or $false
 
     .Inputs
         String Vultr API key
-		String Domain Name
-		String DNS Record ID
+        String Domain Name
+        String DNS Record ID
 
     .Outputs
         Boolean value with True indicating success and False indicating failure.
     
-	.Link
-		Get-VultrDnsRecords
+    .Link
+        Get-VultrDnsRecords
 
     .Notes
         Path:				/v1/dns/update_record
         API Key Required:	Yes
         Request Type:		POST
-		Required Access:	dns
+        Required Access:	dns
 #>
 
     [cmdletbinding()]
@@ -53,7 +53,7 @@ function Update-VultrDnsRecord {
         [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true, ValueFromPipeline=$true )]
         [alias('Key','APIKey')]
         [string]$VultrAPIKey,
-		
+        
         [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
         [alias('Domain')]
         [string]$DomainName,
@@ -62,13 +62,13 @@ function Update-VultrDnsRecord {
         [alias('Id', 'Record')]
         [int]$RecordId,
 
-		[alias('Name')]
-		[string]$SubDomain,
-		
-		[alias('Data')]
+        [alias('Name')]
+        [string]$SubDomain,
+        
+        [alias('Data')]
         [string]$RecordData,
 
-		[alias('Ttl')]
+        [alias('Ttl')]
         [string]$TimeToLive,
 
         [int]$Priority 
@@ -77,42 +77,42 @@ function Update-VultrDnsRecord {
     begin {}
 
     process{
-		# Set up the output
-		[bool]$result = $false;
+        # Set up the output
+        [bool]$result = $false;
 
-		# TODO: How to supply optional parameters -- this way seems to overwrite with empty/default values...
-		try {
-			$params = @{
-				#domain string Domain name to update record
-				domain = $DomainName
+        # TODO: How to supply optional parameters -- this way seems to overwrite with empty/default values...
+        try {
+            $params = @{
+                #domain string Domain name to update record
+                domain = $DomainName
 
-				#RECORDID integer ID of record to update (see /dns/records)
-				RECORDID = $RecordId
+                #RECORDID integer ID of record to update (see /dns/records)
+                RECORDID = $RecordId
 
-				#name string (optional) Name (subdomain) of record
-				name = $SubDomain
+                #name string (optional) Name (subdomain) of record
+                name = $SubDomain
 
-				#data string (optional) Data for this record
-				data = $RecordData
+                #data string (optional) Data for this record
+                data = $RecordData
 
-				#ttl integer (optional) TTL of this record
-				ttl = $TimeToLive
+                #ttl integer (optional) TTL of this record
+                ttl = $TimeToLive
 
-				#priority integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data
-				priority = $Priority
-			}
-		
-			$response = Vultr-Post 'dns' 'update_record' -VultrAPIKey $VultrAPIKey -RequestBody $params
+                #priority integer (optional) (only required for MX and SRV) Priority of this record (omit the priority from the data
+                priority = $Priority
+            }
+        
+            $response = Vultr-Post 'dns' 'update_record' -VultrAPIKey $VultrAPIKey -RequestBody $params
 
-			$result = ($response -eq '200')
+            $result = ($response.StatusCode -eq 200)
         }
         catch {
             throw
         }
         finally {
-			$result
+            $result
         }
-	}
+    }
 
-	end {}
+    end {}
 }
