@@ -49,9 +49,10 @@
     <Folder Include="Public\user" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Private\Get-Vultr.ps1" />
+    <Compile Include="Private\Remove-EmptyParams.ps1" />
+    <Compile Include="Private\Vultr-Get.ps1" />
     <Compile Include="Private\Invoke-VultrAPI.ps1" />
-    <Compile Include="Private\Set-Vultr.ps1" />
+    <Compile Include="Private\Vultr-Post.ps1" />
     <Compile Include="Private\Test-Json.ps1" />
     <Compile Include="PSVultrAPI.psd1" />
     <Compile Include="PSVultrAPI.psm1" />

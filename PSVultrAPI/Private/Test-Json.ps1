@@ -19,7 +19,7 @@ function Test-Json {
         Boolean - true if valid JSON, false otherwise.
 #>
     [CmdletBinding()]
-    [OutputType([PSObject])]
+    [OutputType([bool])]
     param(
         [parameter( Position=0, Mandatory=$true, ValueFromPipelineByPropertyName =$true, ValueFromPipeline=$true )]
         [alias('JSON')]

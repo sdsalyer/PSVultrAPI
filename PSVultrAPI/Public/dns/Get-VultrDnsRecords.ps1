@@ -64,7 +64,7 @@ function Get-VultrDnsRecords {
 				domain = $DomainName
 			}
 
-            Get-Vultr 'dns' 'records' -VultrAPIKey $VultrAPIKey -RequestBody $params
+            Vultr-Get 'dns' 'records' -VultrAPIKey $VultrAPIKey -RequestBody $params
         }
         catch {
             throw

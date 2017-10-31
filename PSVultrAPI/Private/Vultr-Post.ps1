@@ -1,10 +1,10 @@
-function Get-Vultr {
+function Vultr-Post {
 <#
     .Synopsis
-        Shortcut for GET requests to Invoke-VultrAPI
+        Shortcut for POST requests to Invoke-VultrAPI
         
     .Description
-        Shortcut for GET requests to Invoke-VultrAPI
+        Shortcut for POST requests to Invoke-VultrAPI
 
     .Parameter $APIGroup
 
@@ -33,11 +33,11 @@ function Get-Vultr {
         [alias('Function', 'Call')]
         [string]$APIFunction,
 
-        [parameter( Mandatory=$false, ValueFromPipelineByPropertyName =$true )]
+        [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
         [alias('Key','APIKey')]
         [string]$VultrAPIKey,
 
-        [parameter( Mandatory=$false, ValueFromPipelineByPropertyName =$true )]
+        [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
         [alias('Parameters', 'Params', 'Body')]
         [Hashtable]$RequestBody = @{}
     )
@@ -46,7 +46,7 @@ function Get-Vultr {
 
     process{
         try {
-            Invoke-VultrAPI -HTTPMethod GET -APIGroup $APIGroup -APIFunction $APIFunction -VultrAPIKey $VultrAPIKey -RequestBody $RequestBody
+            Invoke-VultrAPI -HTTPMethod POST -APIGroup $APIGroup -APIFunction $APIFunction -VultrAPIKey $VultrAPIKey -RequestBody $RequestBody
         }
         catch {
             throw

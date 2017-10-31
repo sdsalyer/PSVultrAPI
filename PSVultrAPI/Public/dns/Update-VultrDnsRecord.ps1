@@ -102,7 +102,7 @@ function Update-VultrDnsRecord {
 				priority = $Priority
 			}
 		
-			$response = Set-Vultr 'dns' 'update_record' -VultrAPIKey $VultrAPIKey -RequestBody $params
+			$response = Vultr-Post 'dns' 'update_record' -VultrAPIKey $VultrAPIKey -RequestBody $params
 
 			$result = ($response -eq '200')
         }

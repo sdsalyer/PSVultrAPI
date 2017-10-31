@@ -20,7 +20,7 @@ function Invoke-VultrAPI {
     .Parameter $Version 
 
     .Outputs
-        The Vultr API returns JSON or an HTTP Status code. 
+        PsObject - A custom PsObject with a StatusCode and a JSON object.
 
     .Example 
         # GET request with no arguments.
@@ -68,7 +68,7 @@ function Invoke-VultrAPI {
         Invoke-VultrAPI -HTTPMethod POST -APIGroup $group -APIFunction $updtRecordFn -RequestBody $updtParams -VultrAPIKey $key
 #>
     [CmdletBinding()]
-    [OutputType([PSObject])]
+    [OutputType([PsObject])]
     param(
 
         [parameter( Mandatory=$true, ValueFromPipelineByPropertyName =$true )]
@@ -97,70 +97,88 @@ function Invoke-VultrAPI {
     )
     begin {}
     process{
-        # Set up the $Response
-        $Response = ''
+		# Set up the response object
+		$VultrResponse = New-Object -TypeName PsObject -Property @{ 
+			StatusCode = [int]$null
+			Message    = [string]$null
+			Content    = [PsObject]$null
+		} | Add-Member -MemberType ScriptMethod -Name ToString -Value {
+			$(If ($this.Content) {$this.Content} Else {$this.StatusCode})
+		} -PassThru -Force
 
         # An error message if we need it
         $errorMessage = ''
+		$errorStatus = 0
 
         # Begin assembling the request URI
         $APIRequestUri = "$Uri/v$Version/$APIGroup/$APIFunction"
 
         # Not all API functions require a key
         if($VultrAPIKey) {
-            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+            $headers = New-Object -TypeName System.Collections.Generic.Dictionary[[String],[String]]
             $headers.Add("API-Key", $VultrAPIKey)
         }
 
         # Potentially handle other REST methods
         switch ($HTTPMethod) { 
             'GET' {
-
+				# GET processing
             } 
             'POST' {
-
+				# POST processing
 
             } 
             default {
-                $errorMessage = 'No HTTP Method determined.'
-                Write-Error $errorMessage
-                return $errorMessage;
+                $errorMessage = handleStatusCode($errorStatus)
+                
+				Write-Error "PSVultrAPI Error: $errorMessage"
+				
+				$VultrResponse.StatusCode = $errorStatus
+				$VultrResponse.Message = $errorMessage
             }
         }
 
         
         # Invoke the API
         try {
-            # TODO: Consider changing to Invoke-WebRequest for greater flexibility
-            $Response = Invoke-RestMethod -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody
+			$response = Invoke-WebRequest -Method $HTTPMethod -Uri $APIRequestUri -Header $headers -Body $RequestBody
+			
+			$VultrResponse.StatusCode = $response.StatusCode
+			$VultrResponse.Message = handleStatusCode($response.StatusCode)
+			$VultrResponse.Content = $response.Content
         }
         catch [System.Net.WebException]{
-            # Handle HTTP Response Codes:
-			$statusCode = [int]$_.Exception.Response.StatusCode;
-            switch ($statusCode) {
-                # Code					Description
-                # 200{$errorMessage = 'Function successfully executed.'																   } # shouldn't get this on an exception
-                400{$errorMessage = 'Invalid API location. Check the URL that you are using.'										   }
-                403{$errorMessage = 'Invalid or missing API key. Check that your API key is present and matches your assigned key.'	   }
-                405{$errorMessage = 'Invalid HTTP method. Check that the method (POST|GET) matches what the documentation indicates.'  }
-                412{$errorMessage = 'Request failed. Check the response body for a more detailed description.'						   }
-                500{$errorMessage = 'Internal server error. Try again at a later time.'												   }
-                503{$errorMessage = 'Rate limit hit. API requests are limited to an average of 2/s. Try your request again later.'	   }
-            }
-
-			$errorMessage = [string]::Format("PSVultrAPI Error: ({0}) - {1}", $statusCode, $errorMessage)
-
-            Write-Error $errorMessage
-            return $errorMessage;
+			$errorStatus = [int]$_.Exception.Response.StatusCode
+			$errorMessage = handleStatusCode($errorStatus)
+            
+			Write-Error "PSVultrAPI Error: $errorMessage"
+			
+			$VultrResponse.StatusCode = $errorStatus
+			$VultrResponse.Message = $errorMessage
         }
-
-        # $Response is a PSObject containing JSON data
-        $Response
+		finally {
+			$VultrResponse
+		}
     }
     end{}
 }
 
 
-$params = @{ domain = 'salyercreative.com'; RECORDID = $recordId; data = '192.168.10.1'; }
+# Get the Vultr message for the Response status code
+function script:handleStatusCode ($statusCode) {
+	[string]$message = ''
 
-$result = Invoke-VultrAPI -HTTPMethod POST -APIGroup 'dns' -APIFunction 'update_record' -VultrAPIKey (Get-Content .\Examples\vultr_api_key.txt) -RequestBody $params
+    switch ($statusCode) {
+		      0 {$message = 'No HTTP Method determined.'																     }
+            200 {$message = 'Function successfully executed.'																 }
+            400 {$message = 'Invalid API location. Check the URL that you are using.'										 }
+            403 {$message = 'Invalid or missing API key. Check that your API key is present and matches your assigned key.'	 }
+            405 {$message = 'Invalid HTTP method. Check that the method (POST|GET) matches what the documentation indicates.'}
+            412 {$message = 'Request failed. Check the response body for a more detailed description.'						 }
+            500 {$message = 'Internal server error. Try again at a later time.'												 }
+            503 {$message = 'Rate limit hit. API requests are limited to an average of 2/s. Try your request again later.'	 }
+		default {$message = 'An unhandled error occurred.'; $statusCode = -1;                                                }
+    }
+
+	[string]::Format("[{0}] {1}", $statusCode, $message)
+}

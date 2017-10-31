@@ -44,7 +44,7 @@ function Get-VultrAccountInfo {
     process {
     
         try {
-            Get-Vultr 'account' 'info' -VultrAPIKey $VultrAPIKey
+            Vultr-Get 'account' 'info' -VultrAPIKey $VultrAPIKey
         }
         catch {
             throw

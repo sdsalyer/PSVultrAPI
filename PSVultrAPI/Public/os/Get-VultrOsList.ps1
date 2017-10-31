@@ -44,7 +44,7 @@ function Get-VultrOsList {
     process {
     
         try {
-            Get-Vultr 'os' 'list'
+            Vultr-Get 'os' 'list'
         }
         catch {
             throw

@@ -44,7 +44,7 @@ function Get-VultrDnsList {
     process {
     
         try {
-            Get-Vultr 'dns' 'list' -VultrAPIKey $VultrAPIKey
+            Vultr-Get 'dns' 'list' -VultrAPIKey $VultrAPIKey
         }
         catch {
             throw
